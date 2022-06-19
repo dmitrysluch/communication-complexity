@@ -1,0 +1,462 @@
+\documentclass{beamer}
+
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian, english]{babel}
+
+\usepackage{amsmath, amsfonts, amsthm, amscd}
+%\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage[matrix,arrow,curve]{xy}
+%\usepackage{multicol}
+
+%----------------------------------------------------
+
+\newtheorem{problemR}{Проблема}
+\newtheorem{aim}{Цель}
+
+
+\newtheorem{construction}{Construction}
+\newtheorem{problems}{Problems}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{question}{Question}
+
+\mode<presentation>
+\usetheme{Madrid}
+
+\title{Коммуникационная сложность и ее приложения}
+\date{2021}
+\author{Дима Случ}
+
+
+\begin{document}
+
+
+
+\begin{frame}
+\begin{center}
+
+
+{\large \scshape
+Коммуникационная сложность и ее приложения
+}
+\url{https://github.com/dmitrysluch/3dRenderer/tree/develop}
+\end{center}
+
+\end{frame}
+\begin{frame}
+\frametitle{Задачи и реализованный функционал}
+Обязательные требования:
+\begin{itemize}
+\item Отрисовка 3d моделей
+\item Перспективная проекция
+\item Z-Buffer
+\item Клиппинг
+\item Интерактивное приложение
+\end{itemize}
+\pause
+Дополнительно реализовал:
+\begin{itemize}
+\item Текстурирование (Билинейная фильтрация)
+\item Освещение (Phong/Blinn-Phong)
+\item Интерфейс для пользовательских материалов
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Конвейер}
+\begin{itemize}
+\item Переход между пространствами
+\begin{itemize}
+    \item Объекта
+    \item Мира
+    \item Камеры
+    \item Homogenous Cull Space
+    \item Экрана
+\end{itemize}
+\pause
+\item Растеризация
+\pause
+\item Пиксельный шейдер
+\pause
+\item Тесты (например глубины)
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Проекция}
+    \begin{center}
+    \includegraphics[scale=0.2]{proj2.png}
+    \end{center}
+\end{frame}
+% \begin{frame}
+% \frametitle{Свет}
+%     \begin{itemize}
+%         \item Рассеяный свет:\\
+%         $\displaystyle color \cdot max(0, (normal, direction))$
+%         \pause
+%         \item Phong:\\
+%         $\displaystyle color \cdot max(0, (reflection, camera)^{power}) I [ (normal, direction) > 0]$\\
+%         \pause
+%         \item Blinn-Phong:\\
+%         $\displaystyle color \cdot max(0, (halfway, normal)^{power})I [ (normal, direction) > 0]$
+%     \end{itemize}
+% \end{frame}
+
+\begin{frame}
+\frametitle{Push vs Pull}
+   Pull
+   \begin{itemize}
+        \item Каждый кадр опрашивается клавиатура и в зависимости от этого изменяются модели
+        \item Каждый кадр на экран отрисовывается текущее состояние моделей
+        \item Цикл активного ожидания и отрисовки
+   \end{itemize}
+   Push
+   \begin{itemize}
+    \item Observable и уведомления
+    \item Контроллеры обновляет модели
+    \item Обновление модели вызывает перерисовку
+    \item Нет активного ожидания
+   \end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Моя реализация}
+
+    \begin{itemize}
+        \item Renderer - низкоуровневый
+        \item Kernel и модели - высокоуровневая библиотека
+        % \item Framework - декларативный синтаксис для сцены (YAML)
+   \end{itemize}
+   \pause
+   \begin{itemize}
+        \item Ядро - владеет моделями - умеет отрисовать сцену
+        \item Модели - ссылаются на ядро
+        \item Контроллеры - меняют модели - kernel.GetComponent<T>()
+        \item Меши и материалы - константны, SceneTransform - proxy
+   \end{itemize}
+\end{frame}
+\end{document}
+
+%-----------------------------------------------------
+
+\begin{frame}
+\frametitle{Affine differential scheme}
+
+A differential ring is a ring $R$ with
+$\Delta=\{\delta_1,\ldots,\delta_m\}$, $\delta_i\delta_j =
+\delta_j\delta_i$
+
+\pause
+
+\begin{center}
+\begin{tabular}{p{4cm}p{4cm}}
+
+   Affine $\Delta$-varieties over $K$& Reduced $\Delta$-finitely generated $K$-algebras \\
+
+
+    \multicolumn{2}{c}{
+
+$$
+\xymatrix@R=3pt{
+    X\subseteq \mathbb A^n_K&\ar[r]&&K\{X\}\\
+    \Max^{\Delta} B&&\ar[l]&B
+}
+$$
+   }
+
+\end{tabular}
+\end{center}
+
+\pause
+
+$R$ a ring $\longmapsto$ ($\diffspec R$, $\mathcal O_R$) a locally
+ringed space \pause (cannot use $\Spec R$)
+
+\pause
+
+\begin{definition}
+\parbox{8cm}{
+\begin{tabular}{ll}
+\multicolumn{2}{l}{$\varphi \colon \diffspec R\to \bigsqcup_{\frak
+q} R_{\frak
+q}$ and $\varphi(\frak q)\in R_{\frak q}$}\\
+$\varphi$ is regular at $\frak p$ if for all $\frak q\in U$\\
+$\varphi(\frak q) = a/b$ in $R_{\frak q}$\\
+\multicolumn{2}{l}{$\mathcal O_R(U)$ $=$ regular functions in $U$}\\
+$X = \diffspec R$
+\end{tabular}
+}\parbox{4cm}{
+\includegraphics[scale=0.5]{struct_sheaf.jpg}
+}
+\end{definition}
+
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{The problem}
+
+\begin{center}
+\begin{tabular}{cc}
+    {\bf Commutative case} & {\bf Differential case} \\[5pt]
+
+    Set $\widehat{R}=\mathcal O_R(\Spec R)$& Set $\widehat{R} = \mathcal O_R(\diffspec
+    R)$\\[5pt]
+
+    $\iota\colon R \to \widehat{R}$& $\iota\colon R\to \widehat{R}$
+    \\[5pt]
+
+\pause
+
+    always isomorphism& not necessarily injective\\
+
+    & not necessarily surjective\\
+\end{tabular}
+\end{center}
+
+\pause
+
+\begin{conjecture}[Jerald Kovacic]
+The map
+\begin{align*}
+    \iota^*\colon \diffspec \widehat{R} &\to \diffspec R\\
+    \frak q& \mapsto \iota^{-1}(\frak q)
+\end{align*}
+is a homeomorphism.
+
+\end{conjecture}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Reduced schemes}
+
+
+
+\begin{center}
+\begin{tabular}{cc}
+    {\bf Commutative case} & {\bf Differential case} \\[5pt]
+
+    $\varphi\colon \Spec R \to \bigsqcup_{\frak q} k(\frak q)$& $\varphi\colon \diffspec R \to \bigsqcup_{\frak q} k(\frak
+    q)$\\[5pt]
+
+    \multicolumn{2}{c}{$\varphi(\frak q) = a/b$ in $k(\frak q)$ and $\mathcal O'_R(U) = $ regular functions in $U$}
+    \\[5pt]
+
+\pause
+
+    Set $\widehat{R}' = \mathcal O'_R(\Spec R)$& Set $\widehat{R}' = \mathcal O'_R(\diffspec R)$
+    \\[5pt]
+
+    \multicolumn{2}{c}{$\iota_r\colon R\to \widehat{R}'$} \\
+\end{tabular}
+\end{center}
+
+\pause
+
+\begin{theorem}
+$\iota_r\colon R\to D\subseteq \widehat R'$. Then $\iota_r^*\colon
+\diffspec D\to \diffspec R$ is a homeomorphism.
+\end{theorem}
+
+\pause
+
+\begin{corollary}
+The mapping $\iota_r^*\colon \diffspec\widehat{R}' \to \diffspec R$
+is a homeomorphism.
+\end{corollary}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Keigher rings}
+
+\begin{definition}[Keigher ring]
+$I\subseteq R$ is a $\Delta$-ideal $\Rightarrow$ $r(I)$ is a
+$\Delta$-ideal.
+\end{definition}
+\pause
+
+$R$ is a Ritt algebra ($\mathbb Q\subseteq R$) $\Rightarrow$ $R$ is
+a Keigher ring. \pause
+
+\begin{theorem}
+$R$ is a Keigher ring, and we are given $\iota\colon R\to D\subseteq
+\widehat R$. Then
+$$
+\iota^*\colon \diffspec D\to \diffspec R
+$$
+ is a
+homeomorphism.
+\end{theorem}
+\pause
+
+\begin{corollary}
+$R$ is a Keigher ring. Then
+$
+\iota^*\colon \diffspec \widehat R \to \diffspec R
+$
+is a homeomorphism.
+\end{corollary}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Improvement}
+
+Ehud Hrushovski:
+
+``$R$ to be a Keigher ring'' is a very strong condition
+
+\pause
+
+\begin{theorem}
+$R$ is a differential ring such that $\nil R$ is differential and we
+are given $ \iota\colon R\to D\subseteq \widehat R$. Then
+$$
+\iota^*\colon \diffspec D\to \diffspec R
+$$
+is a homeomorphism.
+\end{theorem}
+
+\pause
+
+\begin{corollary}
+$R$ is a differential ring such that $\nil R$ is differential. Then
+$$
+\iota^*\colon \diffspec \widehat R \to \diffspec R
+$$
+is a homeomorphism.
+\end{corollary}
+
+
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Iterative derivations}
+
+
+
+\begin{definition}
+Let $\delta=\{\delta^k\}_{k\geqslant 0}$, $\delta^k\colon R\to R$:
+\begin{tabular}{ll}
+1) $\delta^0(x)=x$& 3) $\delta^{k}(ab)=\sum_{\mu+\nu=k}\delta^\mu(a)\delta^\nu(b)$\\
+2) $\delta^k(a+b)=\delta^k(a)+\delta^k(b)$& 4) $\delta^{k}\delta^m = \binom{k+m}{k}\delta^{k+m}$\\
+\end{tabular}
+\end{definition}
+
+\pause
+
+A differential ring $R$ is a ring with $\Delta=\{\delta_1,\ldots,
+\delta_m\}$, $\delta_i$ are iterative derivations, and
+$\delta_i\delta_j = \delta_j\delta_i$.
+
+\pause
+
+\begin{definition}
+\parbox{8cm}{
+\begin{tabular}{ll}
+\multicolumn{2}{l}{$\varphi \colon \diffspec R\to \bigsqcup_{\frak
+q} R_{\frak
+q}$ and $\varphi(\frak q)\in R_{\frak q}$}\\
+$\varphi$ is regular at $\frak p$ if for all $\frak q\in U$\\
+$\varphi(\frak q) = a/b$ in $R_{\frak q}$\\
+\multicolumn{2}{l}{$\mathcal O_R(U)$ $=$ regular functions in $U$}\\
+$X = \diffspec R$
+\end{tabular}
+}\parbox{4cm}{
+\includegraphics[scale=0.5]{struct_sheaf.jpg}
+}
+\end{definition}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Iterative case}
+
+Set $\widehat R = \mathcal O_R(\diffspec R)$.
+
+\pause
+
+\begin{theorem}
+$R$ is a differential ring with iterative derivations and
+$$
+\iota\colon R\to D\subseteq \widehat R.
+$$
+Then
+$$
+\iota^*\colon \diffspec D\to \diffspec R
+$$
+is a homeomorphism.
+\end{theorem}
+
+\pause
+
+\begin{corollary}
+$R$ is a differential ring with iterative derivations. Then
+$$
+\iota^*\colon \diffspec \widehat R \to \diffspec R
+$$
+is a homeomorphism.
+\end{corollary}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The structure sheaf}
+
+
+\begin{center}
+\parbox{4cm}{
+$$
+\xymatrix@R=3pt{
+  R\ar[r]^{\iota}&\widehat{R}\\
+  {X}\ar@{<->}[r]^{\iota^*}&\widehat{X}\\
+  {\frak p}\ar@{<->}[r]&\widehat{\frak p}\\
+}
+$$
+ }\parbox{6cm}{
+\includegraphics[scale=0.5]{two_sheaves.jpg}
+}
+\end{center}
+\pause
+
+\begin{question}
+Does $\mathcal O_R$ coincide with $\mathcal O_{\widehat R}$?
+\end{question}
+\pause
+
+$\mathcal O_{\widehat R,\widehat{ \frak p}}$ could contain more
+nilpotent elements than $\mathcal O_{R,\frak p}$ \pause
+
+\begin{fact}
+If $R$ is reduced. Then $\mathcal O_R = \mathcal O_{\widehat R}$.
+\end{fact}
+
+\end{frame}
+
+
+
+
+\end{document}
